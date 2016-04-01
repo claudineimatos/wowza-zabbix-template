@@ -6,10 +6,14 @@ Description
 
 This is a minimal template to get info about your wowza rest url in your Zabbix Platform.
 
-Two items, by now:
+Five items, by now:
 
 * Global connections in the Wowza
 * Global Live streams number
+* Total Connections Accepted
+* Total Connections Rejected
+* Messages Bytes Out Rate
+* Messages Bytes In Rate
 
 The template uses Zabbix macros to define the user/pass Wowza server url.
 
