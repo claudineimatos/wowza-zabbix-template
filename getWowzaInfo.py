@@ -19,8 +19,20 @@ def Usage ():
         print "Usage: getWowzaInfo.py -u user -p password -h 127.0.0.1 -P 8086 -a [conn|appnum]"
         sys.exit(2)
 
-def getCurrentConnections():
-        print xmlroot[0].text
+def getConnectionsCurrent():
+        print xmlroot.find('ConnectionsCurrent').text
+
+def getMessagesInBytesRate():
+        print xmlroot.find('MessagesInBytesRate').text
+
+def getMessagesOutBytesRate():
+        print xmlroot.find('MessagesOutBytesRate').text
+
+def getConnectionsTotalAccepted():
+        print xmlroot.find('ConnectionsTotalAccepted').text
+
+def getConnectionsTotalRejected():
+        print xmlroot.find('ConnectionsTotalRejected').text
 
 def getCurrentStreams():
         Application =  xmlroot.findall('VHost/Application')
@@ -59,16 +71,29 @@ def main (username,password,host,port,getInfo):
 					Usage()
 
 	url="http://" + host + ":" + port + "/connectioncounts/"
-	request = urllib2.Request(url)
-	base64string = base64.encodestring('%s:%s' % (username, password)).replace('\n', '')
-	request.add_header("Authorization", "Basic %s" % base64string)   
-	result = urllib2.urlopen(request)
-	xmlroot = ET.fromstring(result.read())
+
+	pwdman = urllib2.HTTPPasswordMgrWithDefaultRealm()
+	pwdman.add_password(None, url, username, password)
+
+	auth_handler = urllib2.HTTPDigestAuthHandler(pwdman)
+	opener = urllib2.build_opener(auth_handler)
+
+	res = opener.open(url)
+
+	xmlroot = ET.fromstring(res.read())
 
 	if ( getInfo == "conn"):
-			getCurrentConnections()
+			getConnectionsCurrent()
 	elif ( getInfo == "appnum"):
 			getCurrentStreams()
+	elif ( getInfo == "bytesin"):
+			getMessagesInBytesRate()
+	elif ( getInfo == "bytesout"):
+			getMessagesOutBytesRate()
+	elif ( getInfo == "totalconnaccepted"):
+			getConnectionsTotalAccepted()
+	elif ( getInfo == "totalconnrejected"):
+			getConnectionsTotalRejected()
 	else:
 			unknown()
 			sys.exit(1)
