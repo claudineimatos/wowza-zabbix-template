@@ -6,7 +6,7 @@ Description
 
 This is a minimal template to get info about your wowza rest url in your Zabbix Platform.
 
-Five items, by now:
+The following itens are monitored:
 
 * Global connections in the Wowza
 * Global Live streams number
