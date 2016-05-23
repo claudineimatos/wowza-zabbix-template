@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>2.0</version>
-    <date>2016-04-01T20:17:13Z</date>
+    <date>2016-05-23T15:31:15Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -216,6 +216,51 @@ for authentication.</description>
                     <logtimefmt/>
                 </item>
                 <item>
+                    <name>Wowza Server</name>
+                    <type>0</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>net.tcp.port[{HOST.IP},{$BINDED_PORT}]</key>
+                    <delay>30</delay>
+                    <history>7</history>
+                    <trends>365</trends>
+                    <status>0</status>
+                    <value_type>3</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <delta>0</delta>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Wowza</name>
+                        </application>
+                    </applications>
+                    <valuemap>
+                        <name>Service state</name>
+                    </valuemap>
+                    <logtimefmt/>
+                </item>
+                <item>
                     <name>Wowza Total Connections Accepted</name>
                     <type>10</type>
                     <snmp_community/>
@@ -313,9 +358,44 @@ for authentication.</description>
                 </item>
             </items>
             <discovery_rules/>
-            <macros/>
+            <macros>
+                <macro>
+                    <macro>{$BINDED_PORT}</macro>
+                    <value>1935</value>
+                </macro>
+                <macro>
+                    <macro>{$WOWPASS}</macro>
+                    <value>wowza_password</value>
+                </macro>
+                <macro>
+                    <macro>{$WOWUSER}</macro>
+                    <value>wowza_user</value>
+                </macro>
+            </macros>
             <templates/>
             <screens/>
         </template>
     </templates>
+    <triggers>
+        <trigger>
+            <expression>{Template Wowza Info:net.tcp.port[{HOST.IP},{$BINDED_PORT}].last()}=0</expression>
+            <name>Wowza is down on {HOSTNAME}</name>
+            <url/>
+            <status>0</status>
+            <priority>4</priority>
+            <description/>
+            <type>0</type>
+            <dependencies/>
+        </trigger>
+        <trigger>
+            <expression>{Template Wowza Info:getWowzaInfo.py[&quot;-u&quot;,&quot;{$WOWUSER}&quot;,&quot;-p&quot;,&quot;{$WOWPASS}&quot;,&quot;-h&quot;,&quot;{HOST.CONN}&quot;,&quot;-P&quot;,&quot;8086&quot;,&quot;-a&quot;,&quot;conn&quot;].last(5m)}=0</expression>
+            <name>Wowza no users connected on {HOSTNAME}</name>
+            <url/>
+            <status>0</status>
+            <priority>4</priority>
+            <description/>
+            <type>0</type>
+            <dependencies/>
+        </trigger>
+    </triggers>
 </zabbix_export>
